@@ -59,15 +59,15 @@ def PutInJson(my_dict):#בשביל לעדכן את המילון
 
 
 class MyApp(App):#האפליקציה
-    def build(self):
-        self.good_dic = {}  # Make good_dic an instance variable
+    def build(self):#הבנאי של האפליקציה
+        self.good_dic = {}  # ריבועי הקסם הטובים יהיו פה
 
         # Create the main GridLayout with two rows
         main_layout = GridLayout(rows=2)
 
         # Create a GridLayout for the labels in the top row
         label_layout = GridLayout(cols=3)
-        counter = 0
+        counter = 0#סופר את
         for key, value in my_dict.items():
             if value[1]:
                 self.good_dic[counter] = value[0]
