@@ -30,21 +30,25 @@ class MineSweeper:#המשחק
 
     def RandomPositionForMines(self, elements_to_replace):#מוצא מקום רנדומלי לפצצות ומכניס את זה למערך הפצצות
         positions = [(x, y) for x in range(1, self.row - 1) for y in range(1, self.col - 1)]#מוצא את כל האופציות האפשרויות
-        self.mine_positions = random.sample(positions, elements_to_replace)#בוחר מהאופציות את הכמות הרצויה בצורה רנדומלית ומכניס את זה למערך "מקום הפצצות"
+        self.mine_positions = random.sample(positions, elements_to_replace)#מגריל מקומות ביחס לכמות שניתנה ומכניס למערך
 
-
-
-    def StartGame(self):#מתחיל משחק
-        #print("Original Matrix")
-        #print(self.LogicMatrix)
+    def count_mines(self):#סופר את כמות הפצצות
+        for x, y in self.mine_positions:
+            for i in range(x - 1, x + 2):
+                for j in range(y - 1, y + 2):
+                    if self.LogicMatrix[i][j] != 11:
+                        self.LogicMatrix[i][j] += 1
+    def StartGame(self):
+        print("Original Matrix")
+        print(self.LogicMatrix)
         self.insert_mines()
-        #print("Matrix with mines")
-        #print(self.LogicMatrix)
-        #print("Matrix with mines and numbers")
-        #print(self.LogicMatrix)
-        #print(self.mine_positions)
+        print("Matrix with mines")
+        print(self.LogicMatrix)
+        self.count_mines()
+        print("Matrix with mines and numbers")
+        print(self.LogicMatrix)
+        print(self.mine_positions)
 
-    #Getter and Setter
     def getRow(self):
         return self.row
 
@@ -104,15 +108,15 @@ class MyApp(App):
             self.buttons[(x, y)].text = "X"
 
     def reveal_adjacent_zeros(self, row, col, visited=None):#אם נלחץ אפס צריך להתרחב עד שנמצא מספר, מתרחבים לכל כיוון
-        if visited is None:#בודק האם זאת הפעם הראשונה
-            visited = set()#אם כן, מגדיר אובייקט חדש שבו יזכור את כל המקומות שבהם היה
+        if visited is None:#בודק האם הוא כבר עבר
+            visited = set()
 
         directions = [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, -1), (1, -1), (-1, 1)]#כל הoffset שצריך לעשות מהכפתור שהוא 0
         for dx, dy in directions:#הולך לכל כיוון
             x, y = row + dx, col + dy
             if 1 <= x < self.game.getRow() - 1 and 1 <= y < self.game.getCol() - 1 and (x, y) not in visited:  # מוודא שהוא כבר לא עבר על הכפתור וגם הוא נמצא בתוך גבולות המשחק
                 visited.add((x, y))#מכניס את הקורדינתות לVisited בשביל שלא יעבור על הכפתור שנית
-                # print("Visited: ", visited)
+                #print("Visited: ", visited)
                 val = self.game.getLogicMatrix()[x, y]#ערך הכפתור
                 if val == 0:#אם הכפתור 0 ממשיכים להתרחב בצורה רקורסיבית
                     self.buttons[(x, y)].text = "0"
