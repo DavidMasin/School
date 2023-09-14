@@ -31,26 +31,26 @@ class MagicSquare:#יוצר ריבוע קסם חדש
 
 
 def MakeDictionary(num):#יוצר מילון
-    magic_square = MagicSquare(3).generate_square()#מגריל ריבוע חדש
-    # print(magic_square)
-    if magic_square in my_dict:#בודק האם הריבוע כבר במילון
-        print("This magic square is already in the dictionary")
-        print(my_dict(magic_square))
-    else:
-        my_dict[num] = magic_square#אם לא מכניס אותו למילון
+    # magic_square = MagicSquare(3).generate_square()#מגריל ריבוע חדש
+    # # print(magic_square)
+    # if magic_square in my_dict:#בודק האם הריבוע כבר במילון
+    #     print("This magic square is already in the dictionary")
+    #     print(my_dict(magic_square))
+    # else:
+    #     my_dict[num] = magic_square#אם לא מכניס אותו למילון
+    #
+    # # print(my_dict)
+    # for key, value in my_dict.items():
+    #     if value[1]:#value[1] זה האם הריבוע הוא ריבוע הקסם כן או לא
+    #         print(value[0])#value[0] זה המחרוזת של ריבוע הקסם
+    # return my_dict
 
-    # print(my_dict)
-    for key, value in my_dict.items():
-        if value[1]:#value[1] זה האם הריבוע הוא ריבוע הקסם כן או לא
-            print(value[0])#value[0] זה המחרוזת של ריבוע הקסם
-    return my_dict
-    '''
     my_dict = {}
     for i in range(500000):
-        magic_square = MagicSquare(3).generate_magic_square()
+        magic_square = MagicSquare(3).generate_square()
         my_dict[i] = magic_square
     return my_dict
-    '''
+
 
 
 def PutInJson(my_dict):#בשביל לעדכן את המילון

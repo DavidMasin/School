@@ -35,20 +35,20 @@ class MineSweeper:  # המשחק
         self.mine_positions = random.sample(positions,
                                             elements_to_replace)  # מגריל מקומות ביחס לכמות שניתנה ומכניס למערך
 
-    def count_mines(self):  # סופר את כמות הפצצות
-        for x, y in self.mine_positions:
-            for i in range(x - 1, x + 2):
+    def count_mines(self):  # סופר את כמות הפצצות ומגדיל את כמות מספרים סביבם ב1
+        for x, y in self.mine_positions:#עובר על כל הקורדינתות של הפצצות
+            for i in range(x - 1, x + 2):#עובר סביב הפצצה ומוסיף אחד אם זה לא פצצה
                 for j in range(y - 1, y + 2):
-                    if self.LogicMatrix[i][j] != 11:
-                        self.LogicMatrix[i][j] += 1
+                    if self.LogicMatrix[i][j] != 11:#אם זה לא פצצה
+                        self.LogicMatrix[i][j] += 1#מוסיף אחד
 
     def StartGame(self):
         print("Original Matrix")
         print(self.LogicMatrix)
-        self.insert_mines()
+        self.insert_mines()#מכניס פצצות
         print("Matrix with mines")
         print(self.LogicMatrix)
-        self.count_mines()
+        self.count_mines()#מוסיף מספרים
         print("Matrix with mines and numbers")
         print(self.LogicMatrix)
         print(self.mine_positions)
@@ -99,12 +99,14 @@ class MyApp(App):
         # print(coords)
         value = self.game.getLogicMatrix()[coords[0], coords[1]]  # הערך של הכפתור שנלחץ
         # print(value)
+        print(instance.text=='hidden')
         if instance.text == "hidden":  # הוא בודק האם הכפתור כבר נלחץ אם הוא כבר נלחץ לא יהיה ניתן ללחוץ עליו עוד הפעם
             if value == 11:  # נלחצה פצצה
                 self.end_game()  # מחליף את הכפתורים לYOU LOST
                 self.reveal_all_bombs()  # משנה את השם של הכפתורים שהם פצצות (11) לX
             else:
                 if value == 0:  # אם נלחץ אפס הוא יתחיל לפתוח מסביבו את המספרים בצורה רקורסיבית
+                    instance.text = "0"
                     self.reveal_adjacent_zeros(coords[0], coords[1])
                 else:
                     instance.text = str(int(value))  # אם נלחץ מספר הוא פשוט מראה את המספר
