@@ -2,9 +2,7 @@ import random
 
 import kivy.uix.button
 import numpy as np
-import json
 
-import timer
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
@@ -73,13 +71,14 @@ class MyApp(App):
     def __init__(
             self):  # הגדרת מאתחל בשביל משתנים שאני משתמש בכמה פעולות שונות Buttons ישמור את כל המקומות של הכפתורים וGAME ישמור את המשחק עצמו
         super().__init__()
-        self.mine_positions = None
-        self.buttons = {}  # Store the buttons with their coordinates as keys
-        self.game = None
+
+        self.mine_positions = None  # שומר את מיקום הפצצות
+        self.buttons = {}  # שומר את הכפתורם X וY
+        self.game = None  # המשחק עצמו MineSweeper
 
     def build(self):  # בונה משחק מוקשים חדש
-        row = (int)(input("Please enter the number of rows:"))  # כמות השורות של המשחק עצמו
-        col = (int)(input("Please enter the number of columns:"))  # כמות העמודות במשחק עצמו
+        row = int(input("Please enter the number of rows:"))  # כמות השורות של המשחק עצמו
+        col = int(input("Please enter the number of columns:"))  # כמות העמודות במשחק עצמו
         percentage_of_mines = 1 / 6  # יחס המוקשים
         self.game = MineSweeper(row, col,
                                 percentage_of_mines)  # הגדרת המשחק, אומרים את כמות השורות, כמות העמודות ואת יחס המוקשים
@@ -95,7 +94,7 @@ class MyApp(App):
 
         return main_layout
 
-    def on_button_press(self, instance):
+    def on_button_press(self, instance):  # מה רוקה כשלוחצים על כפתור
         coords = [key for key, btn in self.buttons.items() if btn == instance][0]  # הקורדינתות של הכפתור
         # print(coords)
         value = self.game.getLogicMatrix()[coords[0], coords[1]]  # הערך של הכפתור שנלחץ
@@ -138,19 +137,18 @@ class MyApp(App):
     def end_game(self):  # משנה את כל הכפתורים ל"YOU LOST"
         for btn in self.buttons.values():
             btn.text = "YOU LOST"
-        tmp = timer
 
     def getNumOfMines(self):
         return self.game.getMinePositions().__len__()
+
     def check_end(self):
-        counter = 0
+        counter = 0  # סופר את כמות הכפותרים שלא נלחצו
         print(self.getNumOfMines())
-        for (x, y), btn in self.buttons.items():
-            # Check if there are any non-mine buttons that are still hidden
+        for (x, y), btn in self.buttons.items():  # סופר את כמות הכפתורים שלא נלחצו
             if btn.text == "hidden":
                 counter += 1
         print(counter)
-        return counter == self.getNumOfMines()
+        return counter == self.getNumOfMines()  # אם כמות הכפתורים שלא נלחצו שווה לכמות הפצצות אז נגמר המשחק
 
     def end_game_win(self):  # כמו end_game רק YOU WON
         for btn in self.buttons.values():
