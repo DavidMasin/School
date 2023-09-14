@@ -30,22 +30,25 @@ class MagicSquare:  # יוצר ריבוע קסם חדש
         return string_matrix, is_magic_square(matrix)
 
 
-def MakeDictionary(num):  # יוצר מילון
+def MakeDictionary():  # יוצר מילון
+    #for i in range(100000):
     magic_square = MagicSquare(3).generate_square()  # מגריל ריבוע חדש
     # print(magic_square)
-    if (magic_square) in my_dict.items():  # בודק האם הריבוע כבר במילון
+    if (magic_square[0]) in my_dict.items():  # בודק האם הריבוע כבר במילון
         print("This magic square is already in the dictionary")
     else:
-        my_dict[num] = magic_square  # אם לא מכניס אותו למילון
-        num += 1
-
+        my_dict[magic_square[0]] = magic_square[1]  # אם לא מכניס אותו למילון
     # print(my_dict)
     for key, value in my_dict.items():
-        if value[1]:  # value[1] זה האם הריבוע הוא ריבוע הקסם כן או לא
-            print(value[0])  # value[0] זה המחרוזת של ריבוע הקסם
+        if value:  #  זה האם הריבוע הוא ריבוע הקסם כן או לא
+            print(key)  #  זה המחרוזת של ריבוע הקסם
     return my_dict
 
-
+    # my_dict = {}
+    # for i in range(500000):
+    #     magic_square = MagicSquare(3).generate_square()
+    #     my_dict[i] = magic_square
+    # return my_dict
 
 
 def PutInJson(my_dict):  # בשביל לעדכן את המילון
@@ -63,8 +66,8 @@ class MyApp(App):  # האפליקציה
         label_layout = GridLayout(cols=3)
         counter = 0  # סופר את כמות המספרים של ריבועי הקסם הטובים
         for key, value in my_dict.items():
-            if value[1]:
-                self.good_dic[counter] = value[0]
+            if value:
+                self.good_dic[counter] = key
                 counter += 1
 
         # יוצר את הלייאוט של הלייבלים
@@ -121,5 +124,5 @@ def GettingDic():
 if __name__ == '__main__':
     global my_dict
     GettingDic()
-    PutInJson(MakeDictionary(len(my_dict)))
+    PutInJson(MakeDictionary())
     MyApp().run()
