@@ -1,7 +1,9 @@
+import random
+
+
 class Human:
     def __init__(self, game_instance):
         self.game = game_instance
-        self.board = self.getBoard()
         self.board = self.getBoard()
 
     def getPlace(self, num):
@@ -24,23 +26,38 @@ class Human:
         if num == 9:
             return 2, 2
 
+        # Add a default return for invalid inputs
+        return -1, -1
+
     def getTurn(self, starter):
-        num = input("What do you want to put? ")
-        if num.isdigit():
-            num = int(num)
-            if self.isFree(num):
-                (i, j) = self.getPlace(num)
-                print(starter)
-                if starter == 0:
-                    self.board[i][j] = 'X'
-                else:
-                    self.board[i][j] = 'O'
+        num = random.randrange(0, 9)
+        if self.isFree(num):
+            (i, j) = self.getPlace(num)
+            if starter == 0:
+                self.board[i][j] = 'X'
             else:
-                print("This place is taken")
-                self.getTurn(starter)
+                self.board[i][j] = 'O'
         else:
-            print("Please enter a number")
             self.getTurn(starter)
+
+    # def getTurn(self, starter):
+    #     num = input("What do you want to put? ")
+    #     if num.isdigit():
+    #         num = int(num)
+    #         if self.isFree(num):
+    #             (i, j) = self.getPlace(num)
+    #             print(starter)
+    #             if starter == 0:
+    #                 self.board[i][j] = 'X'
+    #             else:
+    #                 self.board[i][j] = 'O'
+    #         else:
+    #             print("This place is taken")
+    #             self.getTurn(starter)
+    #     else:
+    #         print("Please enter a number")
+    #         self.getTurn(starter)
+
 
     def setBoard(self):
         self.game.setBoard(self.game, self.board)
@@ -53,3 +70,4 @@ class Human:
         if self.board[i][j] != 'X' and self.board[i][j] != 'O':
             return True
         return False
+

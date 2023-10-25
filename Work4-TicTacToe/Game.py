@@ -10,6 +10,7 @@ class Game:
 
         :rtype: object
         """
+        self.boards = []
         self.starter = self.getStarter()
         self.board = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         self.Computer = Comp.Comp(self)
@@ -46,49 +47,52 @@ class Game:
     def startGame(self):
 
         if self.starter == 1:
-            print("Computer starts")
-            return self.DoingGame1()
+            # print("Computer starts")
+            return self.CompStarts()
         else:
-            print("Human starts")
-            return self.DoingGame2()
+            # print("Human starts")
+            return self.HumanStarts()
 
-    def DoingGame1(self):
-        boards = []
+    def CompStarts(self):
         while not self.isGameOver(self.board):
-            self.ComputerTurn(boards)
+            self.ComputerTurn(self.boards)
             if self.isGameOver(self.board):
                 break
-            self.HumanTurn(boards)
-            print("Boards:" + str(boards))
+            self.HumanTurn(self.boards)
         if self.isWinner('X'):
+            # print("Computer won")
             self.ComputerWin = True
-        return boards, self.ComputerWin
+        # else:
+        #     print("YOU WON!!!")
+        return self.boards, self.ComputerWin
 
-    def DoingGame2(self):
-        boards = []
-        self.printBoardAsATable()
+    def HumanStarts(self):
+        # self.printBoardAsATable()
         while not self.isGameOver(self.board):
-            self.HumanTurn(boards)
+            self.HumanTurn(self.boards)
             if self.isGameOver(self.board):
                 break
-            self.ComputerTurn(boards)
-            print("Boards:" + str(boards))
+            self.ComputerTurn(self.boards)
+            # print("Boards:" + str(boards))
 
         if self.isWinner('O'):
+            # print("Computer won")
             self.ComputerWin = True
-        return boards, self.ComputerWin
+        # else:
+            # print("YOU WON!!!")
+        return self.boards, self.ComputerWin
 
     def ComputerTurn(self, boards):
-        print("Computer's turn")
-        Comp.Comp.getTurn(self.Computer, self.starter)
+        # print("Computer's turn")
+        Comp.Comp.getRandomTurn(self.Computer, self.starter)
         boards.append(self.matrixToString())
-        self.printBoardAsATable()
+        # self.printBoardAsATable()
 
     def HumanTurn(self, boards):
-        print("Human's turn")
+        # print("Human's turn")
         Human.Human.getTurn(self.Human, self.starter)
         boards.append(self.matrixToString())
-        self.printBoardAsATable()
+        # self.printBoardAsATable()
 
     def matrixToString(self):
         boardString = ""
@@ -110,6 +114,9 @@ class Game:
 
     def setBoard(self, board):
         self.board = board
+
+    def getBoards(self):
+        return self.boards
 
     def printBoardAsATable(self):
         for i in range(3):
