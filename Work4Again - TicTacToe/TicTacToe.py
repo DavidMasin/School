@@ -8,6 +8,7 @@ class Comp:
         with open('Dict.json', 'r') as json_file:
             # Use a custom decoding function to preserve the tuple data type
             return json.load(json_file, object_hook=lambda item: {k: tuple(v) for k, v in item.items()})
+
     def __init__(self, game_instance):
         self.game = game_instance
         self.board = self.game.getBoard()
@@ -18,24 +19,33 @@ class Comp:
         self.Dict = self.load_dict_from_json()
 
     def getTurn(self):
-
-        board = self.getBestTurn()
-        self.board = board
-        self.game.setBoard(board)
-        return self.board
-
-    def getBestTurn(self):
         self.board = self.game.getBoard()
         availableBoards = self.game.getAvailableBoards(self.board, self.shape)
-        maxBoard = 0
-        bestBoard = availableBoards[0]
         if availableBoards:
-            for board in availableBoards:
-                if board in self.Dict:
-                    if self.game.Dict[board][0] > maxBoard:
-                        bestBoard = board
-                        maxBoard = self.game.Dict[board][0]
-        return bestBoard
+            board = random.choice(availableBoards)
+            self.board = board
+            self.game.setBoard(board)
+            return self.board
+    # def getTurn(self):
+    #
+    #     board = self.getBestTurn()
+    #     self.board = board
+    #     self.game.setBoard(board)
+    #     return self.board
+    #
+    # def getBestTurn(self):
+    #     self.board = self.game.getBoard()
+    #     availableBoards = self.game.getAvailableBoards(self.board, self.shape)
+    #     maxBoard = 0
+    #     bestBoard = availableBoards[0]
+    #     if availableBoards:
+    #         for board in availableBoards:
+    #             if board in self.Dict:
+    #                 if self.game.Dict[board][0] > maxBoard:
+    #                     bestBoard = board
+    #                     maxBoard = self.game.Dict[board][0]
+    #     return bestBoard
+
 
 class Human:
     def __init__(self, game_instance):
@@ -46,7 +56,6 @@ class Human:
             self.shape = 'X'
         else:
             self.shape = 'O'
-
 
     def getTurn(self):
         self.board = self.game.getBoard()
@@ -70,40 +79,40 @@ class Game:
 
     def startGame(self):
         if self.starter == 1:
-            print("Computer starts")
+            # print("Computer starts")
             return self.CompStarts()
         else:
-            print("Human starts")
+            # print("Human starts")
             return self.HumanStarts()
 
     def CompStarts(self):
         while not self.isGameOver():
-            print("Computer Turn")
+            # print("Computer Turn")
             self.Computer.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            self.printableBoard(self.board)  # Convert the board to a list for printing
+            # self.printableBoard(self.board)  # Convert the board to a list for printing
             if self.isGameOver():
                 break
-            print("Human Turn")
+            # print("Human Turn")
             self.Human.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            self.printableBoard(self.board)  # Convert the board to a list for printing
+            # self.printableBoard(self.board)  # Convert the board to a list for printing
         if self.isWinner('X'):
             self.ComputerWin = True
         return self.boards, self.ComputerWin
 
     def HumanStarts(self):
         while not self.isGameOver():
-            print("Human Turn")
+            # print("Human Turn")
             self.Human.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            self.printableBoard(self.board)  # Convert the board to a list for printing
+            # self.printableBoard(self.board)  # Convert the board to a list for printing
             if self.isGameOver():
                 break
-            print("Computer Turn")
+            # print("Computer Turn")
             self.Computer.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            self.printableBoard(self.board)  # Convert the board to a list for printing
+            # self.printableBoard(self.board)  # Convert the board to a list for printing
         if self.isWinner('O'):
             self.ComputerWin = True
         return self.boards, self.ComputerWin
@@ -173,12 +182,11 @@ class Games:
 
         game = Game()
         boards, compWon = game.startGame()
-        currentValue = 0
-        currentTimes = 0
-        counter = 0
-        print(boards)
-        print(compWon)
 
+        counter = 0
+        # print(boards)
+        # print(compWon)
+        boards.reverse()
         for board in boards:
             if board in self.Dict:
                 if compWon:
@@ -203,5 +211,5 @@ class Games:
 
 
 if __name__ == '__main__':
-    for i in range(1):
+    for i in range(100000):
         Games()
