@@ -18,33 +18,33 @@ class Comp:
             self.shape = 'O'
         self.Dict = self.load_dict_from_json()
 
-    def getTurn(self):
-        self.board = self.game.getBoard()
-        availableBoards = self.game.getAvailableBoards(self.board, self.shape)
-        if availableBoards:
-            board = random.choice(availableBoards)
-            self.board = board
-            self.game.setBoard(board)
-            return self.board
     # def getTurn(self):
-    #
-    #     board = self.getBestTurn()
-    #     self.board = board
-    #     self.game.setBoard(board)
-    #     return self.board
-    #
-    # def getBestTurn(self):
     #     self.board = self.game.getBoard()
     #     availableBoards = self.game.getAvailableBoards(self.board, self.shape)
-    #     maxBoard = 0
-    #     bestBoard = availableBoards[0]
     #     if availableBoards:
-    #         for board in availableBoards:
-    #             if board in self.Dict:
-    #                 if self.game.Dict[board][0] > maxBoard:
-    #                     bestBoard = board
-    #                     maxBoard = self.game.Dict[board][0]
-    #     return bestBoard
+    #         board = random.choice(availableBoards)
+    #         self.board = board
+    #         self.game.setBoard(board)
+    #         return self.board
+    def getTurn(self):
+
+        board = self.getBestTurn()
+        self.board = board
+        self.game.setBoard(board)
+        return self.board
+
+    def getBestTurn(self):
+        self.board = self.game.getBoard()
+        availableBoards = self.game.getAvailableBoards(self.board, self.shape)
+        maxBoard = 0
+        bestBoard = availableBoards[0]
+        if availableBoards:
+            for board in availableBoards:
+                if board in self.Dict:
+                    if self.game.Dict[board][0] > maxBoard:
+                        bestBoard = board
+                        maxBoard = self.game.Dict[board][0]
+        return bestBoard
 
 
 class Human:
@@ -208,8 +208,10 @@ class Games:
 
         # print(self.Dict)
         self.save_dict_to_json(self.Dict)
+        if compWon:
+            print("Computer Won")
 
 
 if __name__ == '__main__':
-    for i in range(100000):
+    for i in range(100):
         Games()
