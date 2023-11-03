@@ -180,13 +180,19 @@ class Games:
     def __init__(self):
         self.Dict = self.load_dict_from_json()
 
+    def startGame(self):
         game = Game()
         boards, compWon = game.startGame()
-
-        counter = 0
+        count = 0
         # print(boards)
         # print(compWon)
         boards.reverse()
+        self.DictionaryUpdating(boards, compWon, count)
+        # print(self.Dict)
+        self.save_dict_to_json(self.Dict)
+        return compWon
+
+    def DictionaryUpdating(self, boards, compWon, counter):
         for board in boards:
             if board in self.Dict:
                 if compWon:
@@ -206,12 +212,12 @@ class Games:
                     self.Dict[board] = tuple((0, 1))
             counter += 1
 
-        # print(self.Dict)
-        self.save_dict_to_json(self.Dict)
-        if compWon:
-            print("Computer Won")
-
 
 if __name__ == '__main__':
-    for i in range(100):
-        Games()
+    counter = 0
+    for i in range(100000):
+        if Games().startGame():
+            counter += 1
+        print(i)
+    print(counter)
+    print(counter / 100000)
