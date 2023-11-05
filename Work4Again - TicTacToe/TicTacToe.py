@@ -123,6 +123,7 @@ class Game:
             if board[i] != 'X' and board[i] != 'O':
                 imaginaryBoard = board[:i] + shape + board[i + 1:]
                 availableBoards.append(imaginaryBoard)
+        # print(availableBoards)
         return availableBoards
 
     def printableBoard(self, board):
@@ -181,18 +182,19 @@ class Games:
         self.Dict = self.load_dict_from_json()
 
     def startGame(self):
+        self.Dict = self.load_dict_from_json()
         game = Game()
         boards, compWon = game.startGame()
-        count = 0
         # print(boards)
         # print(compWon)
         boards.reverse()
-        self.DictionaryUpdating(boards, compWon, count)
+        self.DictionaryUpdating(boards, compWon)
         # print(self.Dict)
         self.save_dict_to_json(self.Dict)
         return compWon
 
-    def DictionaryUpdating(self, boards, compWon, counter):
+    def DictionaryUpdating(self, boards, compWon):
+        counter = 0
         for board in boards:
             if board in self.Dict:
                 if compWon:
@@ -201,6 +203,9 @@ class Games:
                     self.Dict[board] = tuple(
                         (((currentValue * currentTimes) + math.pow(0.9, counter)) / (currentTimes + 1),
                          (currentTimes + 1)))
+                    # print("Current Value: ", currentValue)
+                    # print(self.Dict[board])
+                    # print(counter)
                 else:
                     currentValue = self.Dict[board][0]
                     currentTimes = self.Dict[board][1]
@@ -215,9 +220,11 @@ class Games:
 
 if __name__ == '__main__':
     counter = 0
+    games = Games()
     for i in range(100000):
-        if Games().startGame():
-            counter += 1
         print(i)
+        if games.startGame():
+            counter += 1
     print(counter)
-    print(counter / 100000)
+
+
