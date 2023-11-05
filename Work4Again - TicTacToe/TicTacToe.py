@@ -2,6 +2,16 @@ import json
 import math
 import random
 
+import kivy.uix.button
+import numpy as np
+
+from kivy.app import App
+from kivy.clock import Clock
+from kivy.uix.gridlayout import GridLayout
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.uix.popup import Popup
+
 
 class Comp:
     def load_dict_from_json(self):
@@ -79,40 +89,40 @@ class Game:
 
     def startGame(self):
         if self.starter == 1:
-            # print("Computer starts")
+            print("Computer starts")
             return self.CompStarts()
         else:
-            # print("Human starts")
+            print("Human starts")
             return self.HumanStarts()
 
     def CompStarts(self):
         while not self.isGameOver():
-            # print("Computer Turn")
+            print("Computer Turn")
             self.Computer.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            # self.printableBoard(self.board)  # Convert the board to a list for printing
+            self.printableBoard(self.board)  # Convert the board to a list for printing
             if self.isGameOver():
                 break
-            # print("Human Turn")
+            print("Human Turn")
             self.Human.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            # self.printableBoard(self.board)  # Convert the board to a list for printing
+            self.printableBoard(self.board)  # Convert the board to a list for printing
         if self.isWinner('X'):
             self.ComputerWin = True
         return self.boards, self.ComputerWin
 
     def HumanStarts(self):
         while not self.isGameOver():
-            # print("Human Turn")
+            print("Human Turn")
             self.Human.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            # self.printableBoard(self.board)  # Convert the board to a list for printing
+            self.printableBoard(self.board)  # Convert the board to a list for printing
             if self.isGameOver():
                 break
-            # print("Computer Turn")
+            print("Computer Turn")
             self.Computer.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-            # self.printableBoard(self.board)  # Convert the board to a list for printing
+            self.printableBoard(self.board)  # Convert the board to a list for printing
         if self.isWinner('O'):
             self.ComputerWin = True
         return self.boards, self.ComputerWin
@@ -179,19 +189,22 @@ class Games:
             json.dump(Dict, json_file, default=lambda item: {k: list(v) for k, v in item.items()})
 
     def __init__(self):
+        self.game = Game()
         self.Dict = self.load_dict_from_json()
 
     def startGame(self):
         self.Dict = self.load_dict_from_json()
-        game = Game()
-        boards, compWon = game.startGame()
-        # print(boards)
-        # print(compWon)
+        boards, compWon = self.game.startGame()
+        print(boards)
+        print(compWon)
         boards.reverse()
         self.DictionaryUpdating(boards, compWon)
         # print(self.Dict)
         self.save_dict_to_json(self.Dict)
         return compWon
+
+    def getBoard(self):
+        return self.game.getBoard()
 
     def DictionaryUpdating(self, boards, compWon):
         counter = 0
@@ -218,13 +231,59 @@ class Games:
             counter += 1
 
 
+class TicTacToeApp(App):
+
+    def build(self):
+        self.games = Games()
+        self.game = self.games.game
+        self.grid = GridLayout(cols=3)
+        self.buttons = [Button(text=str(i), font_size='48sp') for i in range(1, 10)]
+        self.playerShape = str(self.game.getStarter())
+        self.computerShape = ''
+        if int(self.playerShape) == 0:
+            self.playerShape = 'X'
+            self.computerShape = 'O'
+        else:
+            self.playerShape = 'O'
+            self.computerShape = 'X'
+
+        if self.game.getStarter() == 1:
+            self.computerTurn()
+        for i, button in enumerate(self.buttons):
+            button.bind(on_release=lambda btn, idx=i: self.player_turn(idx))
+            self.grid.add_widget(button)
+
+        return self.grid
+
+    def computerTurn(self):
+        if not self.game.isGameOver():
+            self.games.game.Computer.getTurn()
+            self.updateBoard()
+            if self.games.game.isGameOver():
+                self.end_game("Computer wins!" if self.games.game.isWinner(self.computerShape) else "It's a draw!")
+
+    def updateBoard(self):
+        board = self.games.game.getBoard()
+        for i, cell in enumerate(board):
+            self.buttons[i].text = cell
+
+    def player_turn(self, place):
+        board = self.games.getBoard()
+        if board[place] not in 'XO':
+            self.games.game.Human.board = board[:place] + str(self.playerShape) + board[place + 1:]
+            self.games.game.setBoard(self.games.game.Human.board)
+            self.updateBoard()
+            if self.games.game.isGameOver():
+                self.end_game("You win!" if self.games.game.isWinner(self.playerShape) else "It's a draw!")
+            else:
+                self.computerTurn()
+
+    def end_game(self, message):
+        popup = Popup(title='Game Over',
+                      content=Label(text=message),
+                      size_hint=(None, None), size=(200, 200))
+        popup.open()
+
+
 if __name__ == '__main__':
-    counter = 0
-    games = Games()
-    for i in range(100000):
-        print(i)
-        if games.startGame():
-            counter += 1
-    print(counter)
-
-
+    TicTacToeApp().run()
