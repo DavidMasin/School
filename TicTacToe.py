@@ -16,12 +16,16 @@ from kivy.uix.popup import Popup
 class Comp:
     def load_dict_from_json(self):
         with open('Dict.json', 'r') as json_file:
+            # Use a custom decoding function to preserve the tuple data type
             return json.load(json_file, object_hook=lambda item: {k: tuple(v) for k, v in item.items()})
 
     def __init__(self, game_instance):
         self.game = game_instance
         self.board = self.game.getBoard()
-        self.shape = 'X' if self.game.getStarter() == 1 else 'O'
+        if self.game.getStarter() == 1:
+            self.shape = 'X'
+        else:
+            self.shape = 'O'
         self.Dict = self.load_dict_from_json()
 
     # def getTurn(self):
@@ -44,16 +48,12 @@ class Comp:
         availableBoards = self.game.getAvailableBoards(self.board, self.shape)
         maxBoard = 0
         bestBoard = availableBoards[0]
-
         if availableBoards:
             for board in availableBoards:
-
-                realBoard = self.game.convertToNormalStringForBoards(board)
-                if realBoard in self.Dict:
-
-                    if self.Dict[realBoard][0] > maxBoard:
+                if board in self.Dict:
+                    if self.game.Dict[board][0] > maxBoard:
                         bestBoard = board
-                        maxBoard = self.Dict[realBoard][0]
+                        maxBoard = self.game.Dict[board][0]
         return bestBoard
 
 
@@ -61,7 +61,11 @@ class Human:
     def __init__(self, game_instance):
         self.game = game_instance
         self.board = self.game.getBoard()
-        self.shape = 'X' if self.game.getStarter() == 0 else 'O'
+        self.starter = self.game.getStarter()
+        if self.starter == 0:
+            self.shape = 'X'
+        else:
+            self.shape = 'O'
 
     def getTurn(self):
         self.board = self.game.getBoard()
@@ -78,7 +82,7 @@ class Game:
         self.boards = []
         self.starter = random.randrange(0, 2)
         # print(self.starter)
-        self.board = '123456789'
+        self.board = '123456789'  # Store the board as a string
         self.Computer = Comp(self)
         self.Human = Human(self)
         self.ComputerWin = False
@@ -96,21 +100,13 @@ class Game:
             print("Computer Turn")
             self.Computer.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-<<<<<<< HEAD
-            # self.printableBoard(self.board)
-=======
             self.printableBoard(self.board)  # Convert the board to a list for printing
->>>>>>> master
             if self.isGameOver():
                 break
             print("Human Turn")
             self.Human.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-<<<<<<< HEAD
-            # self.printableBoard(self.board)
-=======
             self.printableBoard(self.board)  # Convert the board to a list for printing
->>>>>>> master
         if self.isWinner('X'):
             self.ComputerWin = True
         return self.boards, self.ComputerWin
@@ -120,21 +116,13 @@ class Game:
             print("Human Turn")
             self.Human.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-<<<<<<< HEAD
-            # self.printableBoard(self.board)
-=======
             self.printableBoard(self.board)  # Convert the board to a list for printing
->>>>>>> master
             if self.isGameOver():
                 break
             print("Computer Turn")
             self.Computer.getTurn()
             self.boards.append(self.convertToNormalStringForBoards(self.board))
-<<<<<<< HEAD
-            # self.printableBoard(self.board)
-=======
             self.printableBoard(self.board)  # Convert the board to a list for printing
->>>>>>> master
         if self.isWinner('O'):
             self.ComputerWin = True
         return self.boards, self.ComputerWin
@@ -179,32 +167,25 @@ class Game:
 
     def convertToNormalStringForBoards(self, board):
         normal_board = ''
-        if self.starter == 1:
-            for cell in board:
-                if cell == 'X':
-                    normal_board += '2'
-                elif cell == 'O':
-                    normal_board += '1'
-                else:
-                    normal_board += '0'
-        else:
-            for cell in board:
-                if cell == 'X':
-                    normal_board += '1'
-                elif cell == 'O':
-                    normal_board += '2'
-                else:
-                    normal_board += '0'
+        for cell in board:
+            if cell == 'X':
+                normal_board += '1'
+            elif cell == 'O':
+                normal_board += '2'
+            else:
+                normal_board += '0'
         return normal_board
 
 
 class Games:
     def load_dict_from_json(self):
         with open('Dict.json', 'r') as json_file:
+            # Use a custom decoding function to preserve the tuple data type
             return json.load(json_file, object_hook=lambda item: {k: tuple(v) for k, v in item.items()})
 
     def save_dict_to_json(self, Dict):
         with open('Dict.json', 'w') as json_file:
+            # Use a custom encoding function to convert tuples to lists for JSON
             json.dump(Dict, json_file, default=lambda item: {k: list(v) for k, v in item.items()})
 
     def __init__(self):
